@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Review Analysis</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      color: #374151;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    h2.section-title {
+      font-size: 28px;
+      color: #1f2937;
+      margin: 40px 0 20px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Container for Product Sections */
+    .product-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Product Card Styles */
+    .product-card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Decorative background gradient */
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to bottom right, #6a5acd, #7b68ee, #9370db);
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    /* Product Card Content */
+    .product-card-content {
+      position: relative;
+      z-index: 1;
+    }
+    .product-card h3 {
+      font-size: 20px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    .product-card p {
+      font-size: 14px;
+      color: #576574;
+      line-height: 1.5;
+    }
+    .product-card p strong {
+      color: #333;
+    }
+
+    /* Suggestions Section Styles */
+    .suggestions-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .suggestion-card {
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #f0f8ff;
+      border-left: 4px solid #0073e6;
+    }
+    .suggestion-card h3 {
+      font-size: 18px;
+      color: #374151;
+    }
+    .suggestion-card p {
+      font-size: 14px;
+      color: #333;
+      margin: 5px 0;
+    }
+    .suggestion-card .highlight {
+      font-weight: bold;
+      color: #0073e6;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Product Review Analysis</h1>
+
+<div id="productContainer">
+  <!-- Amazon and Flipkart product sections will be injected here -->
+</div>
+
+<h2 class="section-title">Buying Suggestions</h2>
+<div class="suggestions-section" id="suggestionsSection">
+  <!-- Suggestions will be injected here -->
+</div>
+
+<script>
+  // Fetch product data from the server
+  fetch('/get-product-data')
+    .then(response => response.json())
+    .then(data => {
+      const productContainer = document.getElementById('productContainer');
+      const suggestionsSection = document.getElementById('suggestionsSection');
+
+      // Amazon Data Section
+      const amazonSectionTitle = document.createElement('h2');
+      amazonSectionTitle.classList.add('section-title');
+      amazonSectionTitle.textContent = 'Amazon Data';
+      productContainer.appendChild(amazonSectionTitle);
+
+      const amazonContainer = document.createElement('div');
+      amazonContainer.classList.add('product-section');
+
+      data.amazonData.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+        
+        productCard.innerHTML = `
+          <div class="product-card-content">
+            <h3>${product['Product Name (Amazon)']}</h3>
+            <p><strong>Price:</strong> ${product['Price (Amazon)']}</p>
+            <p><strong>Rating:</strong> ${product['Rating (Amazon)']}</p>
+            <p><strong>Reviews:</strong> ${product['Reviews (Amazon)']}</p>
+          </div>
+        `;
+
+        amazonContainer.appendChild(productCard);
+      });
+      productContainer.appendChild(amazonContainer);
+
+      // Flipkart Data Section
+      const flipkartSectionTitle = document.createElement('h2');
+      flipkartSectionTitle.classList.add('section-title');
+      flipkartSectionTitle.textContent = 'Flipkart Data';
+      productContainer.appendChild(flipkartSectionTitle);
+
+      const flipkartContainer = document.createElement('div');
+      flipkartContainer.classList.add('product-section');
+
+      data.flipkartData.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+        
+        productCard.innerHTML = `
+          <div class="product-card-content">
+            <h3>${product['Product Name (Flipkart)']}</h3>
+            <p><strong>Price:</strong> ${product['Price (Flipkart)']}</p>
+            <p><strong>Rating:</strong> ${product['Rating (Flipkart)']}</p>
+            <p><strong>Reviews:</strong> ${product["Reviews (Flipkart)"]}</p>
+          </div>
+        `;
+
+        flipkartContainer.appendChild(productCard);
+      });
+      productContainer.appendChild(flipkartContainer);
+
+      // Display product suggestions
+      data.productSuggestions.forEach(suggestion => {
+        const suggestionCard = document.createElement('div');
+        suggestionCard.classList.add('suggestion-card');
+
+        suggestionCard.innerHTML = `
+          <h3>${suggestion.title}</h3>
+          <p><strong>Average Rating:</strong> <span class="highlight">${suggestion.avgRating}</span></p>
+          <p><strong>Suggestion:</strong> ${suggestion.suggestion}</p>
+          <p><strong>Recommended Platform:</strong> <span class="highlight">${suggestion.bestPlatform}</span></p>
+        `;
+
+        suggestionsSection.appendChild(suggestionCard);
+      });
+    })
+    .catch(error => console.error('Error fetching product data:', error));
+</script>
+
+</body>
+</html>
